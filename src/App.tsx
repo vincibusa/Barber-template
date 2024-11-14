@@ -1,184 +1,121 @@
-import React, { useState, FormEvent } from "react";
+// App.tsx
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { StaffMember, Service, Appointment } from "./types";
-import Navigation from "./components/Navigation";
-import HomePage from "./Pages/HomePage";
-import BookingPage from "./Pages/BookingPage";
-import Dashboard from "./Pages/Dashboard";
-import AddStaffModal from "./components/AddStaffModal";
-import AddServiceModal from "./components/AddServiceModal";
+import Navbar from "./components/Navbar";
+import BarberServices from "./Pages/BarberServices";
+import ProfilePage from "./Pages/ProfilePage";
+import BookingModal from "./components/BookingModal";
+
+import { FaCut, FaShower, FaSprayCan } from "react-icons/fa";
+import { BiSolidFaceMask } from "react-icons/bi";
+import HeroSection from "./components/HeroSection";
 
 const App: React.FC = () => {
-  const [showAddStaffModal, setShowAddStaffModal] = useState(false);
-  const [showAddServiceModal, setShowAddServiceModal] = useState(false);
-  const [newStaff, setNewStaff] = useState<Partial<StaffMember>>({
-    name: "",
-    email: "",
-    role: "",
-    experience: "",
-  });
-  const [newService, setNewService] = useState<Partial<Service>>({
-    name: "",
-    price: "",
-    duration: "",
-    description: "",
-  });
-  const [staff, setStaff] = useState<StaffMember[]>([
-    {
-      id: 1,
-      name: "John Smith",
-      email: "john@barber.com",
-      role: "Senior Barber",
-      experience: "5 years",
-    },
-  ]);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState<boolean>(false);
 
-  const [appointments, setAppointments] = useState<Appointment[]>([
-    {
-      id: 1,
-      service: "Classic Haircut",
-      date: "2024-02-20",
-      time: "10:00 AM",
-      status: "Upcoming",
-      clientName: "John Doe",
-      clientEmail: "john@example.com",
-    },
-    {
-      id: 2,
-      service: "Beard Trim",
-      date: "2024-02-18",
-      time: "2:30 PM",
-      status: "Completed",
-      clientName: "Mike Smith",
-      clientEmail: "mike@example.com",
-    },
-  ]);
-  const [editingAppointment, setEditingAppointment] = useState<Appointment | null>(null);
+  const openBookingModal = () => {
+    setIsBookingModalOpen(true);
+  };
 
-  const [services, setServices] = useState<Service[]>([
+  const closeBookingModal = () => {
+    setIsBookingModalOpen(false);
+  };
+
+  const services = [
     {
       id: 1,
-      name: "Classic Haircut",
+      title: "Classic Haircut",
+      description: "Professional haircut with precision styling and finishing",
       price: "$30",
-      duration: "30 mins",
-      image: "images.unsplash.com/photo-1585747860715-2ba37e788b70",
-      description: "Traditional haircut with precision trimming and styling",
+      duration: "45 mins",
+      category: "haircut",
+      image: "images.unsplash.com/photo-1585747860715-2ba37e788b70?ixlib=rb-4.0.3",
+      icon: <FaCut className="text-2xl" />
     },
     {
       id: 2,
-      name: "Beard Trim",
-      price: "$20",
-      duration: "20 mins",
-      image: "images.unsplash.com/photo-1621605815971-fbc98d665033",
-      description: "Professional beard grooming and shaping",
+      title: "Beard Grooming",
+      description: "Expert beard trimming and shaping with hot towel service",
+      price: "$25",
+      duration: "30 mins",
+      category: "grooming",
+      image: "images.unsplash.com/photo-1621605815971-fbc98d665033?ixlib=rb-4.0.3",
+      icon: <FaShower className="text-2xl" />
     },
     {
       id: 3,
-      name: "Hot Towel Shave",
-      price: "$35",
-      duration: "45 mins",
-      image: "images.unsplash.com/photo-1503951914875-452162b0f3f1",
-      description: "Luxurious traditional hot towel shave experience",
+      title: "Hair Treatment",
+      description: "Deep conditioning and scalp treatment for healthy hair",
+      price: "$40",
+      duration: "60 mins",
+      category: "treatment",
+      image: "images.unsplash.com/photo-1562004760-aceed7bb0fe3?ixlib=rb-4.0.3",
+      icon: <FaSprayCan className="text-2xl" />
     },
-  ]);
-
-  const handleAddStaff = (e: FormEvent) => {
-    e.preventDefault();
-    const newStaffMember = {
-      id: staff.length + 1,
-      ...newStaff,
-    } as StaffMember;
-    setStaff([...staff, newStaffMember]);
-    setNewStaff({ name: "", email: "", role: "", experience: "" });
-    setShowAddStaffModal(false);
-  };
-
-  const handleAddService = (e: FormEvent) => {
-    e.preventDefault();
-    const newServiceItem = {
-      id: services.length + 1,
-      ...newService,
-      image: "images.unsplash.com/photo-1585747860715-2ba37e788b70",
-    } as Service;
-    setServices([...services, newServiceItem]);
-    setNewService({ name: "", price: "", duration: "", description: "" });
-    setShowAddServiceModal(false);
-  };
-
-  const handleDeleteAppointment = (id: number) => {
-    setAppointments(appointments.filter((appointment) => appointment.id !== id));
-  };
-
-  const handleEditAppointment = (appointment: Appointment) => {
-    setEditingAppointment(appointment);
-  };
-
-  const handleUpdateAppointment = (e: FormEvent) => {
-    e.preventDefault();
-    if (editingAppointment) {
-      const updatedAppointments = appointments.map((app) =>
-        app.id === editingAppointment.id ? editingAppointment : app
-      );
-      setAppointments(updatedAppointments);
-      setEditingAppointment(null);
+    {
+      id: 4,
+      title: "Facial Care",
+      description: "Rejuvenating facial treatment with premium products",
+      price: "$35",
+      duration: "40 mins",
+      category: "treatment",
+      image: "images.unsplash.com/photo-1600334129128-685c5582fd35?ixlib=rb-4.0.3",
+      icon: <BiSolidFaceMask className="text-2xl" />
     }
-  };
+  ]
+
+  const servicesData: string[] = [
+    "Hair Cut & Styling",
+    "Spa Treatment",
+    "Massage Therapy",
+    "Facial Treatment",
+    "Nail Care",
+    "Body Scrub",
+  ];
+
+  const navLinks = [
+    { name: "Home", href: "/" },
+    { name: "Services", href: "/services" },
+    // Add more links as needed
+  ];
+
+  const userMenuItems = [
+    { name: "Profile", href: "/profile" },
+    { name: "Logout", href: "/logout" },
+    // Add more user menu items as needed
+  ];
 
   return (
     <Router>
-      <div className="relative">
-        <Navigation />
-        {showAddStaffModal && (
-          <AddStaffModal
-            onClose={() => setShowAddStaffModal(false)}
-            onAddStaff={handleAddStaff}
-            newStaff={newStaff}
-            setNewStaff={setNewStaff}
-          />
-        )}
-        {showAddServiceModal && (
-          <AddServiceModal
-            onClose={() => setShowAddServiceModal(false)}
-            onAddService={handleAddService}
-            newService={newService}
-            setNewService={setNewService}
-          />
-        )}
-        <Routes>
-          <Route path="/" element={<HomePage services={services} />} />
-          <Route
-            path="/booking"
-            element={
-              <BookingPage
-                services={services}
-                selectedService={""}
-                setSelectedService={() => {}}
-                selectedDate={""}
-                setSelectedDate={() => {}}
-                selectedTime={""}
-                setSelectedTime={() => {}}
-              />
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <Dashboard
-                isAdmin={true}
-                staff={staff}
-                onAddStaff={() => setShowAddStaffModal(true)}
-                services={services}
-                onAddService={() => setShowAddServiceModal(true)}
-                appointments={appointments}
-                onDeleteAppointment={handleDeleteAppointment}
-                onEditAppointment={handleEditAppointment}
-                editingAppointment={editingAppointment}
-                onUpdateAppointment={handleUpdateAppointment}
-              />
-            }
-          />
-        </Routes>
-      </div>
+      <Navbar
+        logo={{ src: "", alt: "Company Logo" }}
+        navLinks={navLinks}
+        userMenuItems={userMenuItems}
+   
+        isLoggedIn={true} // Example logged-in state
+        onBookAppointment={openBookingModal} // Pass the handler here
+      />
+
+      <Routes>
+        <Route path="/" element={<HeroSection onBookAppointment={openBookingModal} />} />
+        <Route
+          path="/services"
+          element={<BarberServices services={services} />}
+        />
+        <Route path="/profile" element={<ProfilePage />} />
+        {/* Add more routes as needed */}
+      </Routes>
+
+      <BookingModal
+        isOpen={isBookingModalOpen}
+        onClose={closeBookingModal}
+        services={servicesData}
+        onSubmit={(data) => {
+          console.log("Booking Data:", data);
+          // Implement further submission logic (e.g., API call)
+          closeBookingModal();
+        }}
+      />
     </Router>
   );
 };

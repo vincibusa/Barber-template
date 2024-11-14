@@ -1,26 +1,19 @@
-export interface StaffMember {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  experience: string;
-}
+// types.ts
+import { ReactNode } from 'react';
 
 export interface Service {
   id: number;
-  name: string;
+  title: string;
+  description: string;
   price: string;
   duration: string;
+  category: string;
   image: string;
-  description: string;
+  icon: ReactNode;
 }
 
-export interface Appointment {
-  id: number;
-  service: string;
-  date: string;
-  time: string;
-  status: string;
-  clientName: string;
-  clientEmail: string;
+export interface BarberServicesProps {
+  initialServices?: Service[];
+  fallbackImage?: string;
+  containerClassName?: string;
 }
